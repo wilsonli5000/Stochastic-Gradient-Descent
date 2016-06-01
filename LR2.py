@@ -14,6 +14,7 @@ MEAN = 0.25
 MAX_ITR = 10
 ALPHA = 0.005
 TESTSET_SIZE = 400
+SCENARIO = 'hyperball'
 # calculate the sigmoid function
 def sigmoid(inX):
 	return 1.0 / (1 + exp(-inX))
@@ -32,13 +33,13 @@ def trainLogRegres(train_x, train_y, alpha, maxIter):
 	startTime = time.time()
 
 	numSamples, numFeatures = shape(train_x)
-	weights = ones((numFeatures, 1))
+	weights = ones(numFeatures)
 
 	for k in range(maxIter):
 		for i in range(numSamples):
-			output = sigmoid(train_x[i, :] * weights)
-			error = train_y[i, 0] - output
-			weights = weights + alpha * train_x[i, :].transpose() * error
+			output = sigmoid(train_x[i] * weights)
+			error = train_y[i] - output
+			weights = weights + alpha * train_x[i].transpose() * error
 	print 'Congratulations, training complete! Took %fs!' % (time.time() - startTime)
 	return weights
 
@@ -50,20 +51,22 @@ def testLogRegres(weights, test_x, test_y):
 	errorCount = 0
 	totalLoss = 0
 	for i in xrange(numSamples):
-		true_result
-		if test_y[i, 0] == -1:
+		true_result = False
+		if test_y[i] == -1:
 			true_result = False
 		else:
 			true_result = True
-		predict = sigmoid(test_x[i, :] * weights)[0, 0] > 0.5
-		totalLoss += gs.loss(weights, test_y, test_x)
+		predict = sigmoid(inner(test_x[i] , weights)) > 0.5
+		
 		if predict == true_result:
 			matchCount += 1
 		else:
 			errorCount += 1
 	accuracy = float(matchCount) / numSamples
 	errorRate = float(errorCount) / numSamples
-	return errorRate, float(totalLoss) / numSamples 
+	totalLoss = gs.loss(weights, test_y, test_x)
+		
+	return errorRate, float(sum(totalLoss)) / numSamples 
 
 
 # show your trained logistic regression model only available with 2-D data
@@ -97,18 +100,28 @@ def main():
 	n = [50, 100, 500, 1000]
 	sigma = [0.05, 0.25]
 	for sub_sigma in sigma:
+		expected_err = []
+		expected_risk = []
 		for sub_n in n:
-			## generate training set
-			train_x, train_y = gs.generate_samples(sample_size=sub_n, mean=MEAN, std=sub_sigma)
-			learned_weights = trainLogRegres(train_x, train_y, ALPHA, MAX_ITR)
+			## generate test set
+			test_x, test_y = gs.generate_samples(TESTSET_SIZE, MEAN, sub_sigma, SCENARIO)
 			true_err_exp = []
 			risk_exp = []
 			for i in range(20):
-				## generate test set
-				test_x, test_y = gs.generate_samples(sample_size=TESTSET_SIZE, mean=MEAN, std=sub_sigma)
+				## generate training set
+				train_x, train_y = gs.generate_samples(sub_n, MEAN, sub_sigma, SCENARIO)
+				learned_weights = trainLogRegres(train_x, train_y, ALPHA, MAX_ITR)
+				
 				true_err, risk = testLogRegres(learned_weights, test_x, test_y)
 				true_err_exp.append(true_err)
-				risk_exp.append()
+				risk_exp.append(risk)
+			expected_err.append(sum(true_err_exp)/20)
+			expected_risk.append(sum(risk_exp)/20)
+		print "scenario: ", SCENARIO, "sigma = ", sub_sigma, "expected true err:", expected_err, "expected risk:", expected_risk
+		## plot two figures here
+
+if __name__ == '__main__':
+	main()
 
 
 
