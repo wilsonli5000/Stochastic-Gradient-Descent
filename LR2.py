@@ -27,7 +27,6 @@ def trainLogRegres(train_x, train_y, alpha, maxIter):
 	numSamples, numFeatures = shape(train_x)
 	weights = ones((numFeatures, 1))
 
-	# optimize through gradient descent algorilthm
 	for k in range(maxIter):
 		for i in range(numSamples):
 			output = sigmoid(train_x[i, :] * weights)
@@ -42,11 +41,19 @@ def testLogRegres(weights, test_x, test_y):
 	numSamples, numFeatures = shape(test_x)
 	matchCount = 0
 	for i in xrange(numSamples):
+		true_result
+		if test_y[i, 0] == -1:
+			true_result = False
+		else:
+			true_result = True
 		predict = sigmoid(test_x[i, :] * weights)[0, 0] > 0.5
-		if predict == bool(test_y[i, 0]):
+		if predict == true_result:
 			matchCount += 1
+		else:
+			errorCount += 1
 	accuracy = float(matchCount) / numSamples
-	return accuracy
+	errorRate = float(errorCount) / numSamples
+	return errorRate
 
 
 # show your trained logistic regression model only available with 2-D data
@@ -73,3 +80,6 @@ def showLogRegres(weights, train_x, train_y):
 	plt.plot([min_x, max_x], [y_min_x, y_max_x], '-g')
 	plt.xlabel('X1'); plt.ylabel('X2')
 	plt.show()
+
+def main():
+	
