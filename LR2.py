@@ -95,12 +95,15 @@ def main():
 			## generate training set
 			train_x, train_y = gs.generate_samples(sample_size=sub_n, mean=MEAN, std=sub_sigma)
 			learned_weights = trainLogRegres(train_x, train_y, ALPHA, MAX_ITR)
-
+			true_err_exp = []
+			risk_exp = []
 			for i in range(20):
 				## generate test set
 				test_x, test_y = gs.generate_samples(sample_size=TESTSET_SIZE, mean=MEAN, std=sub_sigma)
 				true_err, risk = testLogRegres(learned_weights, test_x, test_y)
-				
+				true_err_exp.append(true_err)
+				risk_exp.append()
+
 
 
 
