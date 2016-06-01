@@ -18,12 +18,13 @@ def sigmoid(inX):
 # train a logistic regression model using SGD
 # input: train_x is a mat datatype, each row stands for one sample
 #		 train_y is mat datatype too, each row is the corresponding label
-def trainLogRegres(train_x, train_y):
+#		 alpha is the step size
+#        maxIter is the number of iterations
+def trainLogRegres(train_x, train_y, alpha, maxIter):
 	# calculate training time
 	startTime = time.time()
 
 	numSamples, numFeatures = shape(train_x)
-	alpha = opts['alpha']; maxIter = opts['maxIter']
 	weights = ones((numFeatures, 1))
 
 	# optimize through gradient descent algorilthm
