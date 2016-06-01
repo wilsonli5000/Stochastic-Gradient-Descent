@@ -19,6 +19,11 @@ SCENARIO = 'hyperball'
 def sigmoid(inX):
 	return 1.0 / (1 + exp(-inX))
 
+def loss_gradient(w, x, y):
+    x_tilde = hstack((x, [1]))
+    return -y * exp(-y * w.dot(x_tilde)) * x_tilde / (1 + exp(-y * w.dot(x_tilde)))
+
+
 def loss(weights, inX, inY):
 	return log(1+exp(-inX * inX * weights))
 
@@ -28,12 +33,23 @@ def loss(weights, inX, inY):
 #		 train_y is mat datatype too, each row is the corresponding label
 #		 alpha is the step size
 #        maxIter is the number of iterations
-def trainLogRegres(train_x, train_y, alpha, maxIter):
+def trainLogRegres(train_x, train_y, alpha, maxIter, scenario):
 	# calculate training time
 	startTime = time.time()
 
 	numSamples, numFeatures = shape(train_x)
-	weights = ones(numFeatures)
+	# weights = ones(numFeatures)
+	weights = zeros((n+1, 5))
+	# w = np.zeros((n + 1, DIM))
+
+	for t in range(numSamples):
+        # alpha = step_size(t + 1, scenario, n)
+        G = loss_gradient(w[t], train_x, train_y)
+     
+        weights[t + 1] = gs.projection(scenario ,w[t] - alpha * G)
+        
+    return np.mean(weights[1:], axis = 0)
+
 
 	for k in range(maxIter):
 		for i in range(numSamples):
