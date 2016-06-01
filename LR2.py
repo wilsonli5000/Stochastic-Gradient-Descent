@@ -18,6 +18,9 @@ TESTSET_SIZE = 400
 def sigmoid(inX):
 	return 1.0 / (1 + exp(-inX))
 
+def loss(weights, inX, inY):
+	return log(1+exp(-inX * inX * weights))
+
 
 # train a logistic regression model using SGD
 # input: train_x is a mat datatype, each row stands for one sample
@@ -44,6 +47,8 @@ def trainLogRegres(train_x, train_y, alpha, maxIter):
 def testLogRegres(weights, test_x, test_y):
 	numSamples, numFeatures = shape(test_x)
 	matchCount = 0
+	errorCount = 0
+	totalLoss = 0
 	for i in xrange(numSamples):
 		true_result
 		if test_y[i, 0] == -1:
@@ -51,13 +56,14 @@ def testLogRegres(weights, test_x, test_y):
 		else:
 			true_result = True
 		predict = sigmoid(test_x[i, :] * weights)[0, 0] > 0.5
+		totalLoss += gs.loss(weights, test_y, test_x)
 		if predict == true_result:
 			matchCount += 1
 		else:
 			errorCount += 1
 	accuracy = float(matchCount) / numSamples
 	errorRate = float(errorCount) / numSamples
-	return errorRate
+	return errorRate, float(totalLoss) / numSamples 
 
 
 # show your trained logistic regression model only available with 2-D data
