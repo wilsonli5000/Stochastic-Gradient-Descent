@@ -10,7 +10,10 @@ import matplotlib.pyplot as plt
 import time
 import generate_sample as gs
 
-
+MEAN = 0.25
+MAX_ITR = 10
+ALPHA = 0.005
+TESTSET_SIZE = 400
 # calculate the sigmoid function
 def sigmoid(inX):
 	return 1.0 / (1 + exp(-inX))
@@ -90,8 +93,15 @@ def main():
 	for sub_sigma in sigma:
 		for sub_n in n:
 			## generate training set
-			gs
-			learned_weights = trainLogRegres()
+			train_x, train_y = gs.generate_samples(sample_size=sub_n, mean=MEAN, std=sub_sigma)
+			learned_weights = trainLogRegres(train_x, train_y, ALPHA, MAX_ITR)
+
+			for i in range(20):
+				## generate test set
+				test_x, test_y = gs.generate_samples(sample_size=TESTSET_SIZE, mean=MEAN, std=sub_sigma)
+				true_err, risk = testLogRegres(learned_weights, test_x, test_y)
+				
+
 
 
 
