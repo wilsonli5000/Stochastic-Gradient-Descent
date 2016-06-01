@@ -1,7 +1,5 @@
 import math
 import numpy as np
-import pandas as pd
-from pandas import DataFrame
 from sklearn import preprocessing
 from sklearn.linear_model import LogisticRegression
 from sklearn.cross_validation import train_test_split
@@ -9,26 +7,15 @@ from numpy import loadtxt, where
 from pylab import scatter, show, legend, xlabel, ylabel
 
 min_max_scaler = preprocessing.MinMaxScaler(feature_range=(-1,1))
-df = pd.read_csv("data.csv", header=0)
 
 
-# clean up data
-df.columns = ["grade1","grade2","label"]
-
-x = df["label"].map(lambda x: float(x.rstrip(';')))
 
 
-X = df[["grade1","grade2"]]
-X = np.array(X)
+X = np.array(X) # X is the input sample data
 X = min_max_scaler.fit_transform(X)
 Y = df["label"].map(lambda x: float(x.rstrip(';')))
 Y = np.array(Y)
 
-
-# if want to create a new clean dataset 
-#X = pd.DataFrame.from_records(X,columns=['grade1','grade2'])
-#X.insert(2,'label',Y)
-#X.to_csv('data2.csv')
 
 # creating testing and training set
 X_train,X_test,Y_train,Y_test = train_test_split(X,Y,test_size=0.33)
@@ -117,12 +104,6 @@ def Declare_Winner(theta):
 		if prediction == answer:
 			score += 1
 	my_score = float(score) / float(length)
-	if my_score > scikit_score:
-		print 'You won!'
-	elif my_score == scikit_score:
-		#print 'Its a tie!'
-	else:
-		#print 'Scikit won.. :('
 	print 'Your score: ', my_score
 	print 'Scikits score: ', scikit_score 
 
