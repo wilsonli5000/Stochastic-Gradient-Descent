@@ -8,10 +8,10 @@ def generate_samples(sample_size, mean, std, scenario):
 	for label in y:
 		x.append(np.append(np.random.normal(mean * label, std, 4), 1.0))
 		
-	return projection(scenario, x), y
+	return projection_inner(scenario, x), y
 
 
-def projection(scenario, x):
+def projection_inner(scenario, x):
 	if scenario is 'hypercube':
 		for samples in x:
 			for dim in samples:
@@ -23,6 +23,17 @@ def projection(scenario, x):
 			if norm > 1:
 				samples = np.divide(samples , np.ones((1,5))*(norm))
 	return x
+
+def projection(scenario, vector):
+	if scenario is 'hypercube':
+		for dim in vector:
+			if dim > 1: dim = 1
+			elif dim < -1: dim = -1
+	elif scenario is 'hyperball':
+		norm = np.linalg.norm(vector)
+		if norm > 1:
+			vector = np.divide(vector , np.ones((1,5))*(norm))
+	return vector
 
 def loss(weights, y, x):
 	loss = []

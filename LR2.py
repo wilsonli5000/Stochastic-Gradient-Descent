@@ -20,8 +20,8 @@ def sigmoid(inX):
 	return 1.0 / (1 + exp(-inX))
 
 def loss_gradient(w, x, y):
-    x_tilde = hstack((x, [1]))
-    return -y * exp(-y * w.dot(x_tilde)) * x_tilde / (1 + exp(-y * w.dot(x_tilde)))
+    
+    return -y * exp(-y * w.dot(x)) * x / (1 + exp(-y * w.dot(x)))
 
 
 def loss(weights, inX, inY):
@@ -36,29 +36,12 @@ def loss(weights, inX, inY):
 def trainLogRegres(train_x, train_y, alpha, maxIter, scenario):
 	# calculate training time
 	startTime = time.time()
-
 	numSamples, numFeatures = shape(train_x)
-	# weights = ones(numFeatures)
-	weights = zeros((n+1, 5))
-	# w = np.zeros((n + 1, DIM))
-
+	weights = zeros((numSamples +1, 5))
 	for t in range(numSamples):
-        # alpha = step_size(t + 1, scenario, n)
-        G = loss_gradient(w[t], train_x, train_y)
-     
-        weights[t + 1] = gs.projection(scenario ,w[t] - alpha * G)
-        
-    return np.mean(weights[1:], axis = 0)
-
-
-	for k in range(maxIter):
-		for i in range(numSamples):
-			output = sigmoid(inner(train_x[i] , weights))
-			error = train_y[i] - output
-			weights = weights + alpha * train_x[i].transpose() * error
-	#print 'Congratulations, training complete! Took %fs!' % (time.time() - startTime)
-	return weights
-
+		G = loss_gradient(weights[t], train_x[t], train_y[t])
+		weights[t + 1] = gs.projection(scenario ,weights[t] - alpha * G)
+	return mean(weights[1:], axis = 0)
 
 # test your trained Logistic Regression model given test set
 def testLogRegres(weights, test_x, test_y):
@@ -111,7 +94,6 @@ def showLogRegres(weights, train_x, train_y):
 	plt.show()
 
 
-
 def main():
 	n = [50, 100, 500, 1000]
 	sigma = [0.05, 0.25]
@@ -132,7 +114,6 @@ def main():
 					true_err, risk = testLogRegres(learned_weights, test_x, test_y)
 					true_err_exp.append(true_err)
 					risk_exp.append(risk)
-				print true_err_exp
 				expected_err.append(sum(true_err_exp)/20)
 				expected_risk.append(sum(risk_exp)/20)
 			print "scenario: ", sub_s, "sigma = ", sub_sigma, "expected true err:", expected_err, "expected risk:", expected_risk
