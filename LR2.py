@@ -8,6 +8,7 @@
 from numpy import *
 import matplotlib.pyplot as plt
 import time
+import generate_sample as gs
 
 
 # calculate the sigmoid function
@@ -73,3 +74,18 @@ def showLogRegres(weights, train_x, train_y):
 	plt.plot([min_x, max_x], [y_min_x, y_max_x], '-g')
 	plt.xlabel('X1'); plt.ylabel('X2')
 	plt.show()
+
+
+
+def main():
+	n = [50, 100, 500, 1000]
+	sigma = [0.05, 0.25]
+	for sub_sigma in sigma:
+		for sub_n in n:
+			## generate training set
+			gs
+			learned_weights = trainLogRegres()
+
+
+
+
