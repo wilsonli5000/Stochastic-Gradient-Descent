@@ -20,9 +20,8 @@ def projection(scenario, x):
 	elif scenario is 'hyperball':
 		for samples in x:
 			norm = np.linalg.norm(samples)
-			print np.empty(5).fill(norm)
 			if norm > 1:
-				samples = np.divide(samples , np.empty(5).fill(norm))
+				samples = np.divide(samples , np.ones((1,5))*(norm))
 	return x
 
 def loss(weights, y, x):

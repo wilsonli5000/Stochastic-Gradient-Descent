@@ -11,8 +11,8 @@ import time
 import generate_sample as gs
 
 MEAN = 0.25
-MAX_ITR = 10
-ALPHA = 0.005
+MAX_ITR = 1
+ALPHA = 0.01
 TESTSET_SIZE = 400
 SCENARIO = 'hyperball'
 # calculate the sigmoid function
@@ -37,10 +37,10 @@ def trainLogRegres(train_x, train_y, alpha, maxIter):
 
 	for k in range(maxIter):
 		for i in range(numSamples):
-			output = sigmoid(train_x[i] * weights)
+			output = sigmoid(inner(train_x[i] , weights))
 			error = train_y[i] - output
 			weights = weights + alpha * train_x[i].transpose() * error
-	print 'Congratulations, training complete! Took %fs!' % (time.time() - startTime)
+	#print 'Congratulations, training complete! Took %fs!' % (time.time() - startTime)
 	return weights
 
 
@@ -99,26 +99,28 @@ def showLogRegres(weights, train_x, train_y):
 def main():
 	n = [50, 100, 500, 1000]
 	sigma = [0.05, 0.25]
-	for sub_sigma in sigma:
-		expected_err = []
-		expected_risk = []
-		for sub_n in n:
-			## generate test set
-			test_x, test_y = gs.generate_samples(TESTSET_SIZE, MEAN, sub_sigma, SCENARIO)
-			true_err_exp = []
-			risk_exp = []
-			for i in range(20):
-				## generate training set
-				train_x, train_y = gs.generate_samples(sub_n, MEAN, sub_sigma, SCENARIO)
-				learned_weights = trainLogRegres(train_x, train_y, ALPHA, MAX_ITR)
-				
-				true_err, risk = testLogRegres(learned_weights, test_x, test_y)
-				true_err_exp.append(true_err)
-				risk_exp.append(risk)
-			expected_err.append(sum(true_err_exp)/20)
-			expected_risk.append(sum(risk_exp)/20)
-		print "scenario: ", SCENARIO, "sigma = ", sub_sigma, "expected true err:", expected_err, "expected risk:", expected_risk
-		## plot two figures here
+	scenario = ['hypercube', 'hyperball']
+	for sub_s in scenario:
+		for sub_sigma in sigma:
+			expected_err = []
+			expected_risk = []
+			test_x, test_y = gs.generate_samples(TESTSET_SIZE, MEAN, sub_sigma, sub_s)
+			for sub_n in n:
+				true_err_exp = []
+				risk_exp = []
+				for i in range(20):
+					## generate training set
+					train_x, train_y = gs.generate_samples(sub_n, MEAN, sub_sigma, sub_s)
+					learned_weights = trainLogRegres(train_x, train_y, ALPHA, MAX_ITR, sub_s)
+					
+					true_err, risk = testLogRegres(learned_weights, test_x, test_y)
+					true_err_exp.append(true_err)
+					risk_exp.append(risk)
+				print true_err_exp
+				expected_err.append(sum(true_err_exp)/20)
+				expected_risk.append(sum(risk_exp)/20)
+			print "scenario: ", sub_s, "sigma = ", sub_sigma, "expected true err:", expected_err, "expected risk:", expected_risk
+			## plot two figures here
 
 if __name__ == '__main__':
 	main()
