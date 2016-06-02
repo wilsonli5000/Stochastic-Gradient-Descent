@@ -93,6 +93,20 @@ def showLogRegres(weights, train_x, train_y):
 	plt.xlabel('X1'); plt.ylabel('X2')
 	plt.show()
 
+def plot_figure(scenario, sigma, expected_risk, expected_err, n):
+	fig, axarr= plt.subplots(2, sharex=False)
+	axarr[0].plot(n, expected_err, '*-')
+	axarr[0].set_title('Expected True Error, sigma = %s, scenario = %s' % (sigma, scenario))
+	axarr[0].xlabel('training set size n')
+	axarr[0].ylabel('expected true error')
+
+	axarr[1].scatter(n, expected_risk)
+	axarr[1].set_title('Expected Risk, sigma = %s, scenario = %s' % (sigma, scenario))
+	axarr[1].ylabel('expected risk')
+	axarr[1].xlabel('training set size n')
+
+	plt.show()
+
 
 def main():
 	n = [50, 100, 500, 1000]
@@ -118,6 +132,7 @@ def main():
 				expected_risk.append(sum(risk_exp)/20)
 			print "scenario: ", sub_s, "sigma = ", sub_sigma, "expected true err:", expected_err, "expected risk:", expected_risk
 			## plot two figures here
+			plot_figure(sub_s, sub_sigma, expected_risk, expected_err, n)
 
 if __name__ == '__main__':
 	main()
