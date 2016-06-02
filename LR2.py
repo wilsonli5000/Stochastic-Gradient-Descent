@@ -12,7 +12,7 @@ import generate_sample as gs
 
 MEAN = 0.25
 MAX_ITR = 1
-ALPHA = 0.01
+ALPHA = 0.05
 TESTSET_SIZE = 400
 SCENARIO = 'hyperball'
 # calculate the sigmoid function
@@ -93,25 +93,27 @@ def showLogRegres(weights, train_x, train_y):
 	plt.xlabel('X1'); plt.ylabel('X2')
 	plt.show()
 
-def plot_figure(scenario, sigma, expected_risk, expected_err, n):
-	fig, axarr= plt.subplots(2, sharex=False)
-	axarr[0].plot(n, expected_err, '*-')
-	axarr[0].set_title('Expected True Error, sigma = %s, scenario = %s' % (sigma, scenario))
-	axarr[0].xlabel('training set size n')
-	axarr[0].ylabel('expected true error')
+# def plot_figure(scenario, sigma, expected_risk, expected_err, n):
+# 	fig, axarr= plt.subplots(2, sharex=False)
+# 	axarr[0].plot(n, expected_err, '*-')
+# 	axarr[0].set_title('Expected True Error, sigma = %s, scenario = %s' % (sigma, scenario))
+# 	axarr[0].xlabel('training set size n')
+# 	axarr[0].ylabel('expected true error')
 
-	axarr[1].scatter(n, expected_risk)
-	axarr[1].set_title('Expected Risk, sigma = %s, scenario = %s' % (sigma, scenario))
-	axarr[1].ylabel('expected risk')
-	axarr[1].xlabel('training set size n')
+# 	axarr[1].scatter(n, expected_risk)
+# 	axarr[1].set_title('Expected Risk, sigma = %s, scenario = %s' % (sigma, scenario))
+# 	axarr[1].ylabel('expected risk')
+# 	axarr[1].xlabel('training set size n')
 
-	plt.show()
+# 	plt.show()
 
 
 def main():
 	n = [50, 100, 500, 1000]
-	sigma = [0.05, 0.25]
-	scenario = ['hypercube', 'hyperball']
+	# sigma = [0.05, 0.25]
+	sigma = [0.25]
+	# scenario = ['hypercube', 'hyperball']
+	scenario = ['hyperball']
 	for sub_s in scenario:
 		for sub_sigma in sigma:
 			expected_err = []
@@ -130,9 +132,22 @@ def main():
 					risk_exp.append(risk)
 				expected_err.append(sum(true_err_exp)/20)
 				expected_risk.append(sum(risk_exp)/20)
-			print "scenario: ", sub_s, "sigma = ", sub_sigma, "expected true err:", expected_err, "expected risk:", expected_risk
+			# print "scenario: ", sub_s, "sigma = ", sub_sigma, "expected true err:", expected_err, "expected risk:", expected_risk			
 			## plot two figures here
-			plot_figure(sub_s, sub_sigma, expected_risk, expected_err, n)
+			# plot_figure(sub_s, sub_sigma, expected_risk, expected_err, n)
+	# print "scenario: ", sub_s, "sigma = ", sub_sigma, "expected true err:", expected_err, "expected risk:", expected_risk
+	# plt.
+	print expected_err, expected_risk
+	index = arange(4) 
+	opacity = 0.4
+	plt.title('hyperball, sigma = 0.25, expected error')
+	plt.xlabel('number of sample')
+	plt.ylabel('error')
+	plt.xticks(index + 0.35, (50, 100, 500, 1000))
+	rect = plt.bar(index, expected_err, 0.35,alpha = opacity, color='b')
+	# rect1 = plt.bar(index+0.35, expected_risk, 0.35, alpha = opacity, color='r')
+	plt.show()
+
 
 if __name__ == '__main__':
 	main()
